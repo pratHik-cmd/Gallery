@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Gallery X</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Cosmic Color Scheme */
+        :root {
+            --cosmic-purple: #6e44ff;
+            --neon-pink: #ff2ced;
+            --cyber-teal: #00f5d4;
+            --void-black: #0a0a14;
+            --starlight: #f0f0ff;
+            --galaxy-glow: 0 0 15px var(--cosmic-purple), 
+                          0 0 30px rgba(0, 245, 212, 0.3);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Cosmic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            background: var(--void-black);
+            color: var(--starlight);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(110, 68, 255, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(255, 44, 237, 0.15) 0%, transparent 25%);
+        }
+
+        /* Cyberpunk Header */
+        .cyber-header {
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(110, 68, 255, 0.3);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--galaxy-glow);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--cosmic-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(110, 68, 255, 0.3);
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cosmic-purple), var(--neon-pink));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.6s ease;
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Holographic Profile */
+        .profile-container {
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .profile-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-teal);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+            position: relative;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.1) rotateY(15deg);
+            box-shadow: 0 0 25px var(--cyber-teal);
+        }
+
+        .profile-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                45deg,
+                transparent 40%,
+                rgba(0, 245, 212, 0.3) 50%,
+                transparent 60%
+            );
+            animation: hologram-scan 3s linear infinite;
+        }
+
+        @keyframes hologram-scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* Cyber Filter Buttons */
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .filter-nav::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyber-teal), transparent);
+        }
+
+        .cyber-filter {
+            padding: 0.8rem 1.8rem;
+            background: rgba(20, 20, 40, 0.6);
+            border: 1px solid var(--cosmic-purple);
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--starlight);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-filter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(110, 68, 255, 0.3),
+                transparent
+            );
+            transition: var(--transition);
+        }
+
+        .cyber-filter:hover::before {
+            left: 100%;
+        }
+
+        .cyber-filter.active {
+            background: var(--cosmic-purple);
+            box-shadow: 0 0 15px var(--cosmic-purple);
+            border-color: var(--neon-pink);
+        }
+
+        /* Matrix Grid */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Cyber Card */
+        .cyber-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: var(--transition);
+            aspect-ratio: 1/1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(110, 68, 255, 0.1) 0%,
+                rgba(255, 44, 237, 0.1) 100%
+            );
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .cyber-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 15px 30px rgba(110, 68, 255, 0.3);
+        }
+
+        .cyber-card:hover::before {
+            opacity: 1;
+        }
+
+        .cyber-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .cyber-card:hover .cyber-img {
+            transform: scale(1.1);
+        }
+
+        /* Cyber Overlay */
+        .cyber-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(10, 10, 20, 0.9), transparent);
+            padding: 1.5rem;
+            transform: translateY(100%);
+            transition: var(--transition);
+        }
+
+        .cyber-card:hover .cyber-overlay {
+            transform: translateY(0);
+        }
+
+        .cyber-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--cyber-teal), var(--starlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .cyber-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(10, 10, 20, 0.8);
+            border: 1px solid var(--neon-pink);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 44, 237, 0.3);
+        }
+
+        /* Cyber Love */
+        .cyber-love {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid var(--cyber-teal);
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+            transition: var(--transition);
+            opacity: 0;
+        }
+
+        .cyber-card:hover .cyber-love {
+            opacity: 1;
+        }
+
+        .cyber-love:hover {
+            background: rgba(255, 44, 237, 0.2);
+            border-color: var(--neon-pink);
+        }
+
+        .cyber-love.active {
+            background: rgba(255, 44, 237, 0.3);
+            border-color: var(--neon-pink);
+        }
+
+        .cyber-love i {
+            color: var(--starlight);
+            transition: var(--transition);
+        }
+
+        .cyber-love.active i {
+            color: var(--neon-pink);
+        }
+
+        /* Holographic Lightbox */
+        .holo-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .holo-lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .holo-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            border: 1px solid var(--cyber-teal);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--galaxy-glow);
+            animation: holo-appear 0.6s ease;
+        }
+
+        @keyframes holo-appear {
+            0% { transform: scale(0.8) rotateX(15deg); opacity: 0; }
+            100% { transform: scale(1) rotateX(0); opacity: 1; }
+        }
+
+        .holo-img {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+        }
+
+        .holo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(10, 10, 20, 0.9), transparent);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* Cyber Controls */
+        .holo-close, .holo-nav {
+            position: absolute;
+            color: var(--starlight);
+            background: rgba(10, 10, 20, 0.7);
+            border: 1px solid var(--cyber-teal);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+            z-index: 10;
+        }
+
+        .holo-close:hover, .holo-nav:hover {
+            background: var(--cosmic-purple);
+            border-color: var(--neon-pink);
+            transform: scale(1.1);
+        }
+
+        .holo-close {
+            top: 30px;
+            right: 30px;
+            font-size: 1.5rem;
+        }
+
+        .holo-prev {
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+        }
+
+        .holo-next {
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+        }
+
+        /* Cyber Footer */
+        .cyber-footer {
+            background: rgba(10, 10, 20, 0.8);
+            border-top: 1px solid rgba(110, 68, 255, 0.3);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .cyber-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 25%;
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+        }
+
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(20, 20, 40, 0.6);
+            border: 1px solid var(--cosmic-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--starlight);
+            font-size: 1.3rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(110, 68, 255, 0.3),
+                transparent
+            );
+            transition: var(--transition);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            color: var(--cyber-teal);
+            border-color: var(--cyber-teal);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+        }
+
+        .social-icon:hover::before {
+            left: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .matrix-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cyber-header {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .filter-nav {
+                margin: 2rem 0;
+            }
+            
+            .cyber-filter {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .matrix-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            
+            .cyber-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .filter-nav {
+                gap: 0.5rem;
+            }
+            
+            .cyber-footer {
+                padding: 1.5rem;
+            }
+            
+            .social-grid {
+                gap: 1rem;
+            }
+            
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cyberpunk Header -->
+    <header class="cyber-header">
+        <div class="logo">PIXEL GALLERY X</div>
+        <div class="profile-container">
+            <div class="profile-btn" id="profileBtn">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Profile" width="50" height="50">
+            </div>
+        </div>
+    </header>
+
+    <!-- Cyber Filter Navigation with Nature -->
+    <nav class="filter-nav">
+        <button class="cyber-filter active" data-filter="all">
+            <i class="fas fa-globe"></i> ALL
+        </button>
+        <button class="cyber-filter" data-filter="nature">
+            <i class="fas fa-tree"></i> NATURE
+        </button>
+        <button class="cyber-filter" data-filter="cyber">
+            <i class="fas fa-city"></i> CYBER
+        </button>
+        <button class="cyber-filter" data-filter="cosmic">
+            <i class="fas fa-stars"></i> COSMIC
+        </button>
+        <button class="cyber-filter" data-filter="neon">
+            <i class="fas fa-lightbulb"></i> NEON
+        </button>
+    </nav>
+
+    <!-- Matrix Grid with Nature Images -->
+    <div class="matrix-grid">
+        <!-- Nature Images from provided links -->
+        <div class="cyber-card" data-category="nature">
+            <img src="https://www.sustainablehospitalityalliance.org/wp-content/uploads/Nature-Positive-Report-Header-Image-1536x864.jpg" alt="Nature Positive" class="cyber-img">
+            <div class="cyber-category">NATURE</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Nature Positive</h3>
+                <p>United vision for nature conservation</p>
+            </div>
+        </div>
+        
+        <div class="cyber-card" data-category="nature">
+            <img src="https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/f/s/z/large-beautiful-waterfall-nature-view-large-size-high-resolution-original-imag7jz8hfgzahgz.jpeg" alt="Waterfall" class="cyber-img">
+            <div class="cyber-category">NATURE</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Majestic Waterfall</h3>
+                <p>High resolution nature view</p>
+            </div>
+        </div>
+        
+        <div class="cyber-card" data-category="nature">
+            <img src="https://static.vecteezy.com/system/resources/previews/036/594/827/large_2x/beautiful-natural-scenery-with-mountains-and-lake-in-the-forest-4k-wallpaper-ai-generated-free-photo.jpg" alt="Mountain Lake" class="cyber-img">
+            <div class="cyber-category">NATURE</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Mountain Lake</h3>
+                <p>4K natural scenery wallpaper</p>
+            </div>
+        </div>
+        
+        <!-- Cyber Images -->
+        <div class="cyber-card" data-category="cyber">
+            <img src="https://source.unsplash.com/random/800x800?cyberpunk,city" alt="Cyber City" class="cyber-img">
+            <div class="cyber-category">CYBER</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Neon Metropolis</h3>
+                <p>Futuristic cityscape with vibrant neon lights</p>
+            </div>
+        </div>
+        
+        <!-- Cosmic Images -->
+        <div class="cyber-card" data-category="cosmic">
+            <img src="https://source.unsplash.com/random/800x800?space,galaxy" alt="Cosmic Galaxy" class="cyber-img">
+            <div class="cyber-category">COSMIC</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Stellar Nebula</h3>
+                <p>Interstellar clouds of cosmic dust</p>
+            </div>
+        </div>
+        
+        <!-- Neon Images -->
+        <div class="cyber-card" data-category="neon">
+            <img src="https://source.unsplash.com/random/800x800?neon,signs" alt="Neon Signs" class="cyber-img">
+            <div class="cyber-category">NEON</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Electric Dreams</h3>
+                <p>Vibrant neon glow in the dark</p>
+            </div>
+        </div>
+        
+        <!-- More Cyber Images -->
+        <div class="cyber-card" data-category="cyber">
+            <img src="https://source.unsplash.com/random/800x800?future,tech" alt="Future Tech" class="cyber-img">
+            <div class="cyber-category">CYBER</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Circuit Overload</h3>
+                <p>Advanced technological interfaces</p>
+            </div>
+        </div>
+        
+        <!-- More Cosmic Images -->
+        <div class="cyber-card" data-category="cosmic">
+            <img src="https://source.unsplash.com/random/800x800?universe,stars" alt="Universe Stars" class="cyber-img">
+            <div class="cyber-category">COSMIC</div>
+            <div class="cyber-love">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="cyber-overlay">
+                <h3 class="cyber-title">Quantum Void</h3>
+                <p>Infinite space exploration</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holographic Lightbox -->
+    <div class="holo-lightbox" id="holoLightbox">
+        <button class="holo-close" id="holoClose">&times;</button>
+        <button class="holo-nav holo-prev" id="holoPrev">&lt;</button>
+        <button class="holo-nav holo-next" id="holoNext">&gt;</button>
+        <div class="holo-content">
+            <img src="" alt="" class="holo-img" id="holoImg">
+            <div class="holo-caption" id="holoCaption"></div>
+        </div>
+    </div>
+
+    <!-- Cyber Footer -->
+    <footer class="cyber-footer">
+        <div class="social-grid">
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-dribbble"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-behance"></i></a>
+        </div>
+        <p>© 2023 PIXEL GALLERY X | NATURE + TECH VISUALS</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const profileBtn = document.getElementById('profileBtn');
+        const cyberFilters = document.querySelectorAll('.cyber-filter');
+        const cyberCards = document.querySelectorAll('.cyber-card');
+        const loveButtons = document.querySelectorAll('.cyber-love');
+        const holoLightbox = document.getElementById('holoLightbox');
+        const holoImg = document.getElementById('holoImg');
+        const holoCaption = document.getElementById('holoCaption');
+        const holoClose = document.getElementById('holoClose');
+        const holoPrev = document.getElementById('holoPrev');
+        const holoNext = document.getElementById('holoNext');
+        
+        // Gallery Data
+        let currentImageIndex = 0;
+        const cyberImages = Array.from(document.querySelectorAll('.cyber-img'));
+        const cyberOverlays = Array.from(document.querySelectorAll('.cyber-overlay'));
+        
+        // Profile Interaction
+        profileBtn.addEventListener('click', () => {
+            // In a real app, this would toggle a profile menu
+            alert("Profile menu would open here");
+        });
+        
+        // Filter Gallery
+        cyberFilters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                // Update active filter
+                cyberFilters.forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                
+                const filterValue = filter.dataset.filter;
+                
+                // Filter cards with animation
+                cyberCards.forEach(card => {
+                    if (filterValue === 'all' || card.dataset.category === filterValue) {
+                        card.style.display = 'block';
+                        card.style.animation = 'fadeIn 0.6s';
+                    } else {
+                        card.style.animation = 'fadeOut 0.6s';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 500);
+                    }
+                });
+            });
+        });
+        
+        // Love Button Interaction
+        loveButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                button.classList.toggle('active');
+                const icon = button.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+            });
+        });
+        
+        // Open Lightbox
+        cyberCards.forEach((card, index) => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.cyber-love')) return;
+                
+                currentImageIndex = index;
+                updateLightbox();
+                holoLightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        // Close Lightbox
+        holoClose.addEventListener('click', () => {
+            holoLightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Lightbox Navigation
+        holoPrev.addEventListener('click', showPrevImage);
+        holoNext.addEventListener('click', showNextImage);
+        
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (!holoLightbox.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') {
+                holoLightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            } else if (e.key === 'ArrowLeft') {
+                showPrevImage();
+            } else if (e.key === 'ArrowRight') {
+                showNextImage();
+            }
+        });
+        
+        // Lightbox Functions
+        function updateLightbox() {
+            holoImg.src = cyberImages[currentImageIndex].src;
+            const title = cyberOverlays[currentImageIndex].querySelector('.cyber-title').textContent;
+            const desc = cyberOverlays[currentImageIndex].querySelector('p').textContent;
+            holoCaption.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
+        }
+        
+        function showNextImage() {
+            const activeFilter = document.querySelector('.cyber-filter.active').dataset.filter;
+            let filteredImages = [];
+            
+            if (activeFilter === 'all') {
+                filteredImages = cyberImages;
+            } else {
+                filteredImages = Array.from(document.querySelectorAll(`.cyber-card[data-category="${activeFilter}"] .cyber-img`));
+            }
+            
+            currentImageIndex = (currentImageIndex + 1) % filteredImages.length;
+            updateLightbox();
+        }
+        
+        function showPrevImage() {
+            const activeFilter = document.querySelector('.cyber-filter.active').dataset.filter;
+            let filteredImages = [];
+            
+            if (activeFilter === 'all') {
+                filteredImages = cyberImages;
+            } else {
+                filteredImages = Array.from(document.querySelectorAll(`.cyber-card[data-category="${activeFilter}"] .cyber-img`));
+            }
+            
+            currentImageIndex = (currentImageIndex - 1 + filteredImages.length) % filteredImages.length;
+            updateLightbox();
+        }
+    </script>
+</body>
+</html>
